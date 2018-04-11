@@ -20,6 +20,7 @@ class User(UserMixin, Model):
 
     @classmethod
     def create_user(cls, username, email, password, admin=False):
+        """Create a new user. """
         try:
             cls.create(username = username,
                        email = email,
@@ -27,3 +28,10 @@ class User(UserMixin, Model):
                        is_admin = admin)
         except IntegrityError:
             raise ValueError("User already exists!")
+
+
+def initialize():
+    """Initialize the database"""
+    DATABASE.connect()
+    DATABASE.create_tables([User], safe=True)
+    
