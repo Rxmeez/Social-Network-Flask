@@ -1,7 +1,8 @@
-import models
-
 from flask import Flask, g
 from flask.ext.login import LoginManager
+
+import models
+
 
 DEBUG = True
 PORT = 8000

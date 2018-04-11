@@ -1,8 +1,9 @@
-import datetime
-
 from peewee import *
 from flask.ext.login import UserMixin
 from flask.ext.bcrypt import generate_password_hash, check_password_hash
+
+import datetime
+
 
 DATABASE = SqliteDatebase("social.db")
 
@@ -34,4 +35,3 @@ def initialize():
     """Initialize the database"""
     DATABASE.connect()
     DATABASE.create_tables([User], safe=True)
-    
