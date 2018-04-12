@@ -1,5 +1,5 @@
 from flask import (Flask, g, render_template, flash, redirect, url_for)
-from flask.ext.login import LoginManager
+from flask_login import LoginManager
 
 import models
 import forms
@@ -28,7 +28,7 @@ def load_user(userid):
 @app.before_request
 def before_request():
     """Connect to database before each request. """
-    g.db = models.database
+    g.db = models.DATABASE
     g.db.connect()
 
 
@@ -39,7 +39,7 @@ def after_request(response):
     return response
 
 
-@app.route('/register', method=('GET', 'POST'))
+@app.route('/register', methods=('GET', 'POST'))
 def register():
     form = forms.RegisterForm()
     if form.validate_on_submit():
@@ -58,7 +58,7 @@ def index():
     return "Temporary Homepage"
 
 
-if '__name__' == '__main__':
+if __name__ == '__main__':
     models.initialize()
     try:
         models.User.create_user(username='rameezkhan',
@@ -67,4 +67,4 @@ if '__name__' == '__main__':
                                 admin=True)
     except ValueError:
         pass
-    app.run(debug=DEBUG, port=PORT, host=HOST)
+    app.run(debug=DEBUG, host=HOST, port=PORT)
