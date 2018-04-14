@@ -19,7 +19,7 @@ def email_exists(form, field):
 
 
 class RegisterForm(Form):
-    """Building the register form"""
+    """Building the register form. """
     username = StringField(
                 'Username',
                 validators=[
@@ -50,6 +50,22 @@ class RegisterForm(Form):
     )
     password2 = PasswordField(
                 'Confirm Password',
+                validators=[
+                    DataRequired()
+                ]
+    )
+
+
+class LoginForm(Form):
+    """Building the login form. """
+    email = StringField(
+            'Email',
+            validators=[
+                DataRequired(),
+                Email()
+            ])
+    password = PasswordField(
+                'Password',
                 validators=[
                     DataRequired()
                 ]
