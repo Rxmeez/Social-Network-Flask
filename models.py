@@ -19,6 +19,17 @@ class User(UserMixin, Model):
         database = DATABASE
         order_by = ("-joined_date",)
 
+
+    def get_posts(self):
+        return Post.select().where(Post.user == self)
+
+
+    def get_steam(self):
+        return Post.select().where(
+        (Post.user == self)
+        )
+
+
     @classmethod
     def create_user(cls, username, email, password, admin=False):
         """Create a new user. """
@@ -30,6 +41,19 @@ class User(UserMixin, Model):
                            is_admin = admin)
         except IntegrityError:
             raise ValueError("User already exists!")
+
+
+class Post(Model):
+    timestamp = DateTimeField(default=datetime.datetime.now)
+    content = TextField()
+    user = ForeignKeyField(
+        User,
+        related_name = 'posts'
+    )
+
+    class Meta:
+        database = DATABASE
+        order_by = ("-timestamp",)
 
 
 def initialize():
