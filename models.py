@@ -24,7 +24,7 @@ class User(UserMixin, Model):
         return Post.select().where(Post.user == self)
 
 
-    def get_steam(self):
+    def get_stream(self):
         return Post.select().where(
         (Post.user == self)
         )
@@ -59,5 +59,5 @@ class Post(Model):
 def initialize():
     """Initialize the database"""
     DATABASE.connect()
-    DATABASE.create_tables([User], safe=True)
+    DATABASE.create_tables([User, Post], safe=True)
     DATABASE.close()
