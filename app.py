@@ -107,14 +107,61 @@ def index():
 def stream(username=None):
     template='stream.html'
     if username and username != current_user.username:
-        user = model.User.select().where(models.User.username**username).get()
-        stream = user.post.limit(100)
+        user = models.User.select().where(models.User.username**username).get()
+        stream = user.posts.limit(100)
     else:
         user = current_user
         stream = current_user.get_stream().limit(100)
     if username:
         template = 'user_stream.html'
     return render_template(template, stream=stream, user=user)
+
+
+@app.route('/post/<int:post_id>')
+def view_post(post_id):
+    posts = models.Post.select().where(models.Post.id == post_id)
+    return render_template('stream.html', stream=posts)
+
+
+
+@app.route('/follow/<username>')
+@login_required
+def follow(username):
+    try:
+        to_user = models.User.get(models.User.username**username)
+    except DoesNotExist():
+        pass
+    else:
+        try:
+            models.Relationship.create(
+                from_user = g.user._get_current_object(),
+                to_user = to_user
+            )
+        except models.IntegrityError:
+            pass
+        else:
+            flash("You are now following {}!".format(to_user.username), "success")
+    return redirect(url_for('stream', username=to_user.username))
+
+
+@app.route('/unfollow/<username>')
+@login_required
+def unfollow(username):
+    try:
+        to_user = models.User.get(models.User.username**username)
+    except DoesNotExist():
+        pass
+    else:
+        try:
+            models.Relationship.get(
+                from_user = g.user._get_current_object(),
+                to_user = to_user
+            ).delete_instance()
+        except models.IntegrityError:
+            pass
+        else:
+            flash("You have unfollowed {}!".format(to_user.username), "success")
+    return redirect(url_for('stream', username=to_user.username))
 
 
 if __name__ == '__main__':
